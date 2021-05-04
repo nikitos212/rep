@@ -4,6 +4,7 @@
 			Space
 		</TITLE>
 		<style>
+		html { overflow:  hidden; }
 			body{
 			margin: 0;
 			padding: 0;
@@ -21,6 +22,27 @@
 				position: absolute;
 				left: 500px;
 				top: 500px;
+			}
+			#label{
+				width: 120px;
+				height: 10px;
+				position: absolute;
+				left: 15px;
+				top: 5px;
+			}
+			#label2{
+				width: 90px;
+				height: 10px;
+				position: absolute;
+				left: 15px;
+				top: 30px;
+			}
+			#label3{
+				width: 300px;
+				height: 10px;
+				position: absolute;
+				left: 15px;
+				top: 55px;
 			}
 			.beam{
 				background: url('images/beam.png');
@@ -42,12 +64,19 @@
 		<div id="space">
 			<div id="spaceship">
 			</div>
+			<div id="label"><font size="5" color="red" face="Arial"><span id="text1">0 beams</span>
+			</font>
+			</div>
+			<div id="label2"><font size="5" color="red" face="Arial"><span id="text2">0 kills</span>
+			</font>
+			</div>
+			<div id="label3"><font size="5" color="red" face="Arial"><span id="text3">Result: </span></div>
 		</div>
 		<script>
 			bgOffset=0;
 			beamCount=0;
 			enemiesCount=0;
-			
+			kills=0
 			function bgMover(){
 				bgOffset++;
 				if (bgOffset <= 451){
@@ -59,15 +88,32 @@
 			}
 			function bgMover2(){
 				beams=$('.beam');
+				en=$('.enemy');
 				i=0;
 				while(i<beams.length){
-					oldposition=$(beams[i]).css('top')
-					
-					if (parseInt(oldposition)<0){
+					oldposition1=$(beams[i]).css('top')
+					oldposition4=$(beams[i]).css('left')
+					oldposition5=$(beams[i]).css('right')
+					j=0;
+					while(j < en.length){
+						oldposition2=$(en[j]).css('top');
+						oldposition3=$(en[j]).css('left');
+						oldposition6=$(en[j]).css('right');
+						if (parseInt(oldposition1)<=parseInt(oldposition2) && (parseInt(oldposition1))>(parseInt(oldposition2)-60) && parseInt(oldposition3)<=parseInt(oldposition4) && parseInt(oldposition5)>=parseInt(oldposition6)){
+							$(en[j]).remove();
+							$(beams[i]).remove();
+							kills++;
+							$(function() {
+						$('#text2').html(String(kills)+" kills");
+						});
+						}
+						j++;
+					}
+					if (parseInt(oldposition1)<0){
 						$(beams[i]).remove();
 					}
 					else{
-						$(beams[i]).css('top',parseInt(oldposition)-10);
+						$(beams[i]).css('top',parseInt(oldposition1)-10);
 					}
 					i++;
 				}
@@ -82,9 +128,11 @@
 				i=0;
 				while(i < en.length){
 					oldposition=$(en[i]).css('top');
-					
 					if (parseInt(oldposition)>2000){
 						$(en[i]).remove();
+						$(function() {
+							$('#text3').html("...");
+							});
 					}
 					else{
 						$(en[i]).css('top',parseInt(oldposition)+10);
@@ -93,8 +141,8 @@
 				}
 			}
 			setInterval("bgMover()",10)
-			setInterval("bgMover2()",3)
-			setInterval("bgMover3()",500)
+			setInterval("bgMover2()",10)
+			setInterval("bgMover3()",1000)
 			setInterval("enemyMover()",100)
 			
 			$(document).mousemove(function(pos){
@@ -106,6 +154,9 @@
 				$("#space").append("<div id='beam" + beamCount + "' class='beam'></div>");
 				$("#beam" + beamCount).css('left', pos.pageX - 12);
 				$("#beam" + beamCount).css('top', pos.pageY -30);
+				$(function() {
+					$('#text1').html(String(beamCount)+" beams");
+					});
 			});
 		</script>
 	</BODY>
