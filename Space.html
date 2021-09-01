@@ -3,6 +3,7 @@
 		<TITLE>
 			Space
 		</TITLE>
+		<link rel="icon" href="images/iconka.png" type="image/png">
 		<style>
 		html { overflow:  hidden; }
 			body{
@@ -41,7 +42,14 @@
 				width: 300px;
 				height: 10px;
 				position: absolute;
-				left: 15px;
+				left: 700px;
+				top: 5px;
+			}
+			#label4{
+				width: 200px;
+				height: 10px;
+				position: absolute;
+				left: 5px;
 				top: 55px;
 			}
 			.beam{
@@ -55,6 +63,30 @@
 				width: 59px;
 				height: 100px;
 				position: absolute;
+			}
+			#health1{
+				width: 35px;
+				height: 30px;
+				position: absolute;
+				right: 5px;
+				top: 5px;
+				background: url('images/heart.png');
+			}
+			#health2{
+				width: 35px;
+				height: 30px;
+				position: absolute;
+				right: 40px;
+				top: 5px;
+				background: url('images/heart.png');
+			}
+			#health3{
+				width: 35px;
+				height: 30px;
+				position: absolute;
+				right: 75px;
+				top: 5px;
+				background: url('images/heart.png');
 			}
 		</style>
 		<script src="external/jquery/jquery.js">
@@ -71,12 +103,18 @@
 			</font>
 			</div>
 			<div id="label3"><font size="5" color="red" face="Arial"><span id="text3">Result: </span></div>
+			<div id="health1"></div>
+			<div id="health2"></div>
+			<div id="health3"></div>
+			<div id="label4">Mission: 100 kills</div>
 		</div>
 		<script>
 			bgOffset=0;
 			beamCount=0;
 			enemiesCount=0;
-			kills=0
+			kills=0;
+			k=0;
+			op=0;
 			function bgMover(){
 				bgOffset++;
 				if (bgOffset <= 451){
@@ -86,7 +124,7 @@
 					bgOffset=0;
 				}
 			}
-			function bgMover2(){
+			function beamMover(){
 				beams=$('.beam');
 				en=$('.enemy');
 				i=0;
@@ -103,6 +141,10 @@
 							$(en[j]).remove();
 							$(beams[i]).remove();
 							kills++;
+							if (kills==100){
+							$('#text3').html("Result: WIN!");
+							op=1;
+							};
 							$(function() {
 						$('#text2').html(String(kills)+" kills");
 						});
@@ -118,21 +160,34 @@
 					i++;
 				}
 			}
-			function bgMover3(){
+			function enemyCreate(){
 				enemiesCount++;
 				$("#space").append("<div id='enemy" + enemiesCount + "' class='enemy'></div>");
 				$('#enemy' + enemiesCount).css('left', Math.random()*($("#space").width()-59));
 			}
 			function enemyMover(){
 				en=$('.enemy');
+				b2=$('.beam');
 				i=0;
 				while(i < en.length){
 					oldposition=$(en[i]).css('top');
-					if (parseInt(oldposition)>2000){
+					if (parseInt(oldposition)>800){
 						$(en[i]).remove();
+						k++;
+						if (k==3 && op==0){
+								health1.style["background-image"]="url(\"images/repic\")";
+								};
+						if (k==2 && op==0){
+								health2.style["background-image"]="url(\"images/repic\")";
+								};
+						if (k==1 && op==0){
+								health3.style["background-image"]="url(\"images/repic\")";
+								};
 						$(function() {
-							$('#text3').html("...");
-							});
+							if (k==3 && op==0){
+								$('#text3').html("Result: LOSE...");}
+								});
+								
 					}
 					else{
 						$(en[i]).css('top',parseInt(oldposition)+10);
@@ -141,8 +196,8 @@
 				}
 			}
 			setInterval("bgMover()",10)
-			setInterval("bgMover2()",10)
-			setInterval("bgMover3()",1000)
+			setInterval("beamMover()",10)
+			setInterval("enemyCreate()",1200)
 			setInterval("enemyMover()",100)
 			
 			$(document).mousemove(function(pos){
